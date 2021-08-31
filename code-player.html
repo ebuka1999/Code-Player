@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Document</title>
+    <style>
+        body{
+            font-family: sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+        #header{
+            width: 100%;
+            background-color: rgb(224, 198, 158);
+            padding: 5px;
+            height: 30px;
+        }
+        #button-container{
+            width:400px;
+            margin: 0 auto; 
+
+        }
+        .togggle-button{
+            float: left;
+            border: 1px solid grey;
+            padding: 5px;
+            border-right: none;
+            font-size: 90%;
+            background-color: honeydew;
+        }
+        #logo{
+            float: left;
+            font-weight: bold;
+            font-size: 120%;
+            padding: 3px 5px;
+        }
+        #html{
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        #output{
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-right: 1px solid grey;
+        }
+        .active{
+            background-color: #e8f2ff;
+        }
+        .highlight{
+            background-color: gray;
+        }
+        textarea{
+            resize: none;
+            border-top: none;
+            border-color: grey;
+        }
+        .panel{
+            float: left;
+            width: 50%;
+            border-left: none;
+            border-right: 2px solid white;
+            padding-left: 5px;
+        }
+        iframe{
+            border: none;
+        }
+        #editor{
+            position: absolute;
+            top: 6px;
+            right: 20px;
+            height: 30px;
+            width: 170px;
+            border: 2px solid black;
+            border-radius: 4px;
+        }
+        #htmlPanel{
+            color: rgb(240, 208, 120);
+            font-family:sans-serif;
+            background-color: rgb(27, 26, 26);
+            font-size: 15px;
+        }
+        #cssPanel{
+            color: rgb(252, 6, 6);
+            font-family:sans-serif;
+            background-color: rgb(27, 26, 26);
+            font-size: 15px;
+        }
+        #javascriptPanel{
+            color: rgb(61, 61, 255);
+            font-family:sans-serif;
+            background-color: rgb(27, 26, 26);
+            font-size: 15px;
+        }
+        #outputPanel{
+            color:rgb(2, 1, 1);;
+            width: auto;
+        }
+        .hidden{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div id="logo">
+            Code Player 
+        </div>
+        <div id="button-container">
+            <div class="togggle-button active" id="html">HTML</div>
+            <div class="togggle-button" id="css">CSS</div>
+            <div class="togggle-button" id="javascript">JAVASCRIPT</div>
+            <div class="togggle-button active" id="output">OUTPUT</div>
+ 
+
+        </div>
+    </div>
+
+    <div id="body-container">
+        <textarea name="" id="htmlPanel" class="panel"><!--Enter Html code here --></textarea>
+        <textarea name="" id="cssPanel" class="panel hidden">/*Enter CSS code Here*/</textarea>
+        <textarea name="" id="javascriptPanel" class="panel hidden">//Enter Javascript code here</textarea>
+        <iframe class="panel" id="outputPanel">result</iframe>
+    </div>
+    <script>
+        function updateOutput(){
+            $("iframe").contents().find("html").html("<!DOCTYPE html><head><style type='text/css'>" + $("#cssPanel").val() + "</style></head><body>" + $("#htmlPanel").val() +"</body></html>");
+            document.getElementById("outputPanel").contentWindow.eval($("#javascriptPanel").val());
+            
+        }
+        $(".togggle-button").hover(function(){
+            $(this).addClass("highlight")
+            $(this).css("cursor", "pointer")
+        }, function(){
+            $(this).removeClass("highlight")
+            
+        });
+        $(".togggle-button").click(function(){
+            $(this).toggleClass("active");
+            $(this).removeClass("highlight");
+            var panelId = $(this).attr("id") + "Panel";
+            $("#" + panelId).toggleClass("hidden");
+            var NumberOfActivePanels = 4 - $(".hidden").length;
+            $(".panel").width(($(window).width()/NumberOfActivePanels) - 10)
+
+        })
+        // Make the width of the iframe the same as the screen width
+        $(".panel").height($(window).height() - $("#header").height() - 16);
+        $(".panel").width(($(window).width()/2) - 10)
+        updateOutput();
+        // Make the iframe responsive
+        //To prevent the page from being responsive, create a "RUN" button, that when clicked, would execute the code below
+        $("textarea").on('change keyup paste', function(){
+             updateOutput();
+        })
+    </script>
+</body>
+</html>
